@@ -1,0 +1,101 @@
+/* FONTS */
+@font-face {
+    font-family: 'futura_lt_paneuropeanbold';
+    src: url('futuraltpaneuropeanbold-webfont.woff2') format('woff2'),
+         url('futuraltpaneuropeanbold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'futura_lt_paneuropeanheavy';
+    src: url('futuraltpaneuropeanheavy-webfont.woff2') format('woff2'),
+         url('futuraltpaneuropeanheavy-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'futura_lt_paneuropeanregular';
+    src: url('futuraltpaneuropeanbook-webfont.woff2') format('woff2'),
+         url('futuraltpaneuropeanbook-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.futura-regular {
+    font-family: 'futura_lt_paneuropeanregular', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+}
+.futura-bold {
+    font-family: 'futura_lt_paneuropeanbold', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+}
+.futura-heavy {
+    font-family: 'futura_lt_paneuropeanheavy', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+}
+
+.poppins-regular {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.poppins-semibold {
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.poppins-black {
+    font-family: "Poppins", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+}
+
+
+/* DESIGNS */
+.vertical-line {
+    width: 7px;
+    height: 220px;
+    background-color: #F96E2A;
+    margin-right: 30px;
+}
+
+.text-content h1 {
+    font-size: 2.0em;
+    font-weight: bold;
+}
+
+.text-content h1 span {
+    font-size: 3em;
+    font-weight: bold;
+}
+
+.text-content p {
+    font-size: 1em;
+    margin: 5px 0 0;
+}
+
+.btn {
+    color: #F96E2A;
+    border-color: #F96E2A;
+}
+.btn:hover {
+    background-color: #F96E2A;
+    border-color: #F96E2A;
+}

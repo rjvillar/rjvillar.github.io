@@ -15,21 +15,21 @@
 
     <nav class="navbar navbar-expand-lg navbar-light fs-3 bg-white fixed-top mt-3">
         <div class="container d-flex justify-content-center">
-            <a class="navbar-brand fs-3 poppins-black" href="view.html"><span style="color: #F96E2A">Country</span>
+            <a class="navbar-brand fs-3 poppins-black" href="index.html"><span style="color: #F96E2A">Country</span>
                 API</a>
         </div>
     </nav>
 
     <div class="container">
         <div class="row my-5 justify-content-center">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6">
                 <form id="searchCountry" style="margin-top: 75px;">
-                    <input id="countryInput" class="form-control mr-2 flex-grow-1 poppins-regular" type="search"
+                    <input id="countryInput" class="form-control mr-2 poppins-regular" type="search"
                         placeholder="Search a country..." aria-label="Search">
                 </form>
             </div>
         </div>
-        <div class="row" id="countryContainer">
+        <div id="countryContainer">
         </div>
     </div>
 
@@ -71,24 +71,36 @@
                 var container = document.getElementById("countryContainer");
                 container.innerHTML = "";
 
-                filteredCountries.forEach(country => {
-                    var content = `
-                <div class="row justify-content-center">
-                    <div class="col-12 col-md-6">
-                        <div class="card rounded-3 shadow p-2 my-1 d-flex flex-row justify-content-center align-items-center">
-                            <div class="ps-5 p poppins-semibold">${country.name.common}</div>
-                            <div class="ms-5">
-                                <span class="badge bg-primary poppins-regular">${country.region}</span>
-                                <span class="badge bg-secondary poppins-regular">${country.subregion}</span>
-                                <span class="badge bg-success poppins-regular">${country.languages ? country.languages[Object.keys(country.languages)[0]] : 'N/A'}</span>
+                var container = document.getElementById("countryContainer");
+                container.innerHTML = "";
+
+                if (filteredCountries.length === 0) {
+                    container.innerHTML = `
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-12 col-md-6 text-center">
+                                <p class="poppins-semibold">No country found.</p>
                             </div>
                         </div>
-                    </div>
-                </div>
-            `;
-                    container.innerHTML += content;
-                });
-
+                    `;
+                } else {
+                    filteredCountries.forEach(country => {
+                        var content = `
+                            <div class="row justify-content-center">
+                                <div class="col-12 col-md-10">
+                                    <div class="card rounded-3 shadow p-3 my-1 d-flex flex-row justify-content-center align-items-center countryCard">
+                                        <div class="ps-2 p poppins-semibold"><a href="view.html?countryName=${encodeURIComponent(country.name.common)}" class="text-decoration-none">${country.name.common}</a></div>
+                                        <div class="ms-5">
+                                            <span class="badge bg-primary poppins-regular">${country.region}</span>
+                                            <span class="badge bg-secondary poppins-regular">${country.subregion}</span>
+                                            <span class="badge bg-success poppins-regular">${country.languages ? country.languages[Object.keys(country.languages)[0]] : 'N/A'}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        container.innerHTML += content;
+                    });
+                }
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -97,6 +109,15 @@
         document.getElementById('searchCountry').addEventListener('input', function (event) {
             event.preventDefault();
             getCountry();
+        });
+
+        window.addEventListener('load', function() {
+            const urlParameters = new URLSearchParams(window.location.search);
+            if (urlParameters.has("countryName")) {
+                const countryName = urlParameters.get("countryName");
+                document.getElementById("countryInput").value = countryName;
+                getCountry();
+            }
         });
     </script>
 </body>

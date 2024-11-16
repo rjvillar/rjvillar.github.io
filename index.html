@@ -4,192 +4,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RJ.</title>
+    <title>RJCoded</title>
+    <link rel="icon" href="img/RJ logo box.svg" type="img/icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="stylesheet.css">
-    <style>
-        .poppins-regular {
-            font-family: "Poppins", sans-serif;
-            font-weight: 400;
-            font-style: normal;
-        }
-
-        .poppins-semibold {
-            font-family: "Poppins", sans-serif;
-            font-weight: 600;
-            font-style: normal;
-        }
-
-        .poppins-black {
-            font-family: "Poppins", sans-serif;
-            font-weight: 900;
-            font-style: normal;
-        }
-    </style>
+    <link rel="stylesheet" href="stylesheet.css" type="text/css">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light fs-3 bg-light fixed-top shadow">
+    <nav id="navbar" class="navbar navbar-expand-lg fs-3 fixed-top">
         <div class="container">
-            <a class="navbar-brand fs-3 poppins-black" href="#"><span class="text-warning">RONALD JOHN</span> R.
-                VILLAR</a>
+            <a class="navbar-brand" href="index.html">
+                <img src="img/RJ logo text.svg" width="124">
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav fs-5 ms-auto mb-2 mb-lg-0 poppins-black text-center text-lg-start">
+                <ul class="navbar-nav fs-5 ms-auto mb-2 mb-lg-0 text-center text-lg-start">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link description-text" href="#" style="font-size: 1rem; color: #1A1A1D;">Home</a>
+                    </li>
+                    <li class="nav-item description-text">
+                        <a class="nav-link" href="#projects" style="font-size: 1rem; color: #1A1A1D;">Projects</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#works">Works</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
+                        <a class="nav-link description-text" href="#about"
+                            style="font-size: 1rem; color: #1A1A1D;">About</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-                aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-                aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-                aria-label="Slide 3"></button>
-        </div>
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="img/img1.jpg" class="d-block w-100" alt="...">
-                <div class="carousel-caption mb-5">
-                    <h5 class="fs-1 mt-4 poppins-semibold">Welcome to my GitHub.</h5>
-                    <p class="w-60 mx-auto fs-5 poppins-regular">This page is where all of my future works will be
-                        added.</p>
+    <div class="section-hero" style="margin-top: 3rem;padding-top: 1.5rem">
+        <div class="container container-hero">
+            <div class="row">
+                <div class="col-lg-6 col-sm-12">
+                    <div class="text-lg-start featured-text">
+                        <h2 class="title-text" style="font-size: 4rem;">Hi, I'm RJ, a</h2>
+                        <h2 class="title-text featuredName"><strong class="typedText"></strong>.</h2>
+                        <p class="description-text featuredInfo">I'm a young IT student with 4 years of experience, but
+                            a huge motivation to create, develop, and build something useful, user-friendly, and
+                            beautiful.</p>
+                        <div class="social_icons">
+                            <div class="icon1">
+                                <a href="https://instagram.com/lowkeyyrj">
+                                    <i class="fa fa-instagram" style="font-size:1.9rem;color:white"></i>
+                                </a>
+                            </div>
+                            <div class="icon2">
+                                <a href="https://www.facebook.com/profile.php?id=100081103813375">
+                                    <i class="fa fa-facebook" style="font-size:1.3rem;color:white"></i>
+                                </a>
+                                </i>
+                            </div>
+                            <div class="icon3">
+                                <a href="https://github.com/rjvillar">
+                                    <i class="fa fa-github" style="font-size: 2.25rem;color: white;"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="text-center">
+                        <img src="img/profile.svg" class="img-fluid profileImg">
+                    </div>
                 </div>
             </div>
-            <div class="carousel-item">
-                <img src="img/img2.jpg" class="d-block w-100" alt="...">
-                <div class="carousel-caption">
-                    <h5 class="fs-1 mt-4 poppins-semibold">My Works</h5>
-                    <p class="w-60 mx-auto fs-5 poppins-regular">These are my projects that I've made throughout my
-                        career. eme</p>
-                    <p><a href="#works" class="btn btn-warning mt-3 poppins-regular">View Works</a></p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="img/img3.jpg" class="d-block w-100" alt="...">
-                <div class="carousel-caption">
-                    <h5 class="fs-1 mt-4 poppins-semibold">About</h5>
-                    <p class="w-60 mx-auto fs-5 poppins-regular">If you want to know more about me, thank you.</p>
-                    <p><a href="#about" class="btn btn-warning mt-3 poppins-regular">Know Me</a></p>
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center mt-5">
+                <div class="description-text skills">Skills</div>
+                <h2 class="title-text skills-info">these are the languages that I know</h2>
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-            data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-            data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
-
-    <div class="row my-5 g-3 mb-5" id="works">
-        <div class="heading">
-            <h1 class="text-black text-center display-5 poppins-black">My Works</h1>
-        </div>
-        <div class="container">
-            <div class="row d-flex justify-content-center">
-                <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                    <a href="https://drive.google.com/file/d/1d581GIvDVIDjiFU-I0jtAuAC_T32WMiW/view?usp=sharing"
-                        class="text-decoration-none">
-                        <div class="card m-3 shadow d-flex flex-column h-100">
-                            <img src="img/SAM01.jpg" class="card-img-top img-fluid"
-                                style="height: 300px; object-fit: cover;">
-                            <div class="card-body mt-auto">
-                                <h5 class="card-title d-flex align-items-center poppins-semibold">SAM A01</h5>
-                                <p class="card-text">Using creative skills, I created a tri-fold A4 brochure that
-                                    showcases the
-                                    Wuthering Waves' system attributes, properties, and characteristics.</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                    <a href="SAM 02/index.html" class="text-decoration-none">
-                        <div class="card m-3 shadow d-flex flex-column h-100">
-                            <img src="img/SAM02.png" class="card-img-top img-fluid"
-                                style="height: 300px; object-fit: cover;">
-                            <div class="card-body mt-auto">
-                                <h5 class="card-title d-flex align-items-center poppins-semibold">SAM A02</h5>
-                                <p class="card-text">I created an HTML website about the beauty of El Nido, Palawan.
-                                    This
-                                    website is
-                                    responsive because of Bootstrap classes.</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                    <a href="index.html" class="text-decoration-none">
-                        <div class="card m-3 shadow d-flex flex-column h-100">
-                            <img src="img/SAM03.png" class="card-img-top img-fluid"
-                                style="height: 300px; object-fit: cover;">
-                            <div class="card-body mt-auto">
-                                <h5 class="card-title d-flex align-items-center poppins-semibold">SAM A03</h5>
-                                <p class="card-text">This is my GitHub page where my future works will be added.</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                    <a href="SAM 04/index.html" class="text-decoration-none">
-                        <div class="card m-3 shadow d-flex flex-column h-100">
-                            <img src="img/SAM04.png" class="card-img-top img-fluid"
-                                style="height: 300px; object-fit: cover;">
-                            <div class="card-body mt-auto">
-                                <h5 class="card-title d-flex align-items-center poppins-semibold">SAM A04</h5>
-                                <p class="card-text">I created an HTML website that utilizes a free public API with JSON return. It's about countries' region, language, etc.</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+        <div class="marquee">
+            <div class="marquee-content">
+                <img src="img/matiquee logos/html logo.svg">
+                <img src="img/matiquee logos/css logo.svg">
+                <img src="img/matiquee logos/javascript logo.svg">
+                <img src="img/matiquee logos/python logo.svg">
+                <img src="img/matiquee logos/java logo.svg">
+                <img src="img/matiquee logos/sql logo.svg">
+                <img src="img/matiquee logos/php logo.svg">
+                <img src="img/matiquee logos/html logo.svg">
+                <img src="img/matiquee logos/css logo.svg">
+                <img src="img/matiquee logos/javascript logo.svg">
+                <img src="img/matiquee logos/python logo.svg">
+                <img src="img/matiquee logos/java logo.svg">
+                <img src="img/matiquee logos/sql logo.svg">
+                <img src="img/matiquee logos/php logo.svg">
             </div>
         </div>
     </div>
 
-    <section id="about" class="about section-padding">
-        <div class="container">
-            <div class="row justify-content-center flex-row">
-                <div class="col-lg-4 col-md-12 col-12">
-                    <div class="about-img mb-4">
-                        <img src="img/about_img.jpg" class="img-fluid">
-                    </div>
-                </div>
-                <div class="col-lg-8 col-md-12 col-12 ps-lg-5 mt-md-5">
-                    <div class="about-text">
-                        <h2 class="poppins-regular">Hello, I'm <span class="poppins-semibold">RJ</span>!</h2>
-                        <p class="poppins-regular">I study at Polytechnic University of the Philippines - Sto. Tomas
-                            Campus. I am 21 years old living in Calamba City, Laguna. An Information Technology
-                            enthusiast. I want to be a developer someday!</p>
-                    </div>
-                </div>
-            </div>
+    <section id="projects" class="section-projects">
+        <div>test</div>
     </section>
 
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+
+    <script>
+        var copy = document.querySelector('.marquee-content').cloneNode(true);
+        document.querySelector('.marquee').appendChild(copy);
+
+        var typingEffect = new Typed(".typedText", {
+            strings: ["Student", "Programmer", "Developer", "Gamer", "Furdad"],
+            loop: true,
+            typeSpeed: 100,
+            backSpeed: 80,
+            backDelay: 2000
+        })
+
+        function navShadow() {
+            const navHeader = document.getElementById("navbar")
+
+            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                navHeader.style.boxShadow = "0 2px 6px rgba(0, 0, 0, 0.3)";
+            } else {
+                navHeader.style.boxShadow = "none";
+            }
+        }
+        window.addEventListener("scroll", navShadow);
+    </script>
+
 </body>
+
+</html>
 
 </html>

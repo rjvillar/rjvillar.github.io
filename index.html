@@ -40,14 +40,14 @@
         </div>
     </nav>
 
-    <div class="section-hero" style="margin-top: 3rem;padding-top: 1.5rem">
+    <div class="section-hero">
         <div class="container container-hero">
             <div class="row">
                 <div class="col-lg-6 col-sm-12">
                     <div class="text-lg-start featured-text">
                         <h2 class="title-text" style="font-size: 4rem;">Hi, I'm RJ, a</h2>
                         <h2 class="title-text featuredName"><strong class="typedText"></strong>.</h2>
-                        <p class="description-text featuredInfo">I'm a young IT student with 4 years of experience, but
+                        <p class="description-text featuredInfo">I'm a young IT student with 3 years of experience, but
                             a huge motivation to create, develop, and build something useful, user-friendly, and
                             beautiful.</p>
                         <div class="social_icons">
@@ -77,21 +77,8 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12 text-center mt-5">
-                <div class="description-text skills">Skills</div>
-                <h2 class="title-text skills-info">these are the languages that I know</h2>
-            </div>
-        </div>
         <div class="marquee">
             <div class="marquee-content">
-                <img src="img/matiquee logos/html logo.svg">
-                <img src="img/matiquee logos/css logo.svg">
-                <img src="img/matiquee logos/javascript logo.svg">
-                <img src="img/matiquee logos/python logo.svg">
-                <img src="img/matiquee logos/java logo.svg">
-                <img src="img/matiquee logos/sql logo.svg">
-                <img src="img/matiquee logos/php logo.svg">
                 <img src="img/matiquee logos/html logo.svg">
                 <img src="img/matiquee logos/css logo.svg">
                 <img src="img/matiquee logos/javascript logo.svg">
@@ -104,7 +91,13 @@
     </div>
 
     <section id="projects" class="section-projects">
-        <div>test</div>
+        <div class="container container-projects">
+            <div class="description-text text-center overline">Projects</div>
+            <h2 class="title-text text-center project-title">
+                These are some of my projects that I've worked on.
+            </h2>
+            <div id="project-content" class="row d-flex align-items-stretch justify-content-center">
+            </div>
     </section>
 
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
@@ -113,8 +106,14 @@
         crossorigin="anonymous"></script>
 
     <script>
-        var copy = document.querySelector('.marquee-content').cloneNode(true);
-        document.querySelector('.marquee').appendChild(copy);
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const marqueeContent = document.querySelector('.marquee-content');
+            for (let i = 0; i < 4; i++) {
+                const marqueeClone = marqueeContent.cloneNode(true);
+                marqueeContent.parentNode.appendChild(marqueeClone);
+            }
+        });
 
         var typingEffect = new Typed(".typedText", {
             strings: ["Student", "Programmer", "Developer", "Gamer", "Furdad"],
@@ -134,6 +133,27 @@
             }
         }
         window.addEventListener("scroll", navShadow);
+
+        var names = ["SAM A01", "SAM A02", "SAM A03", "SAM A04"]
+        var description = ["Using creative skills, I created a tri-fold A4 brochure that showcases the Wuthering Waves' system attributes, properties, and characteristics.", "I created an HTML website about the beauty of El Nido, Palawan.This website is responsive because of Bootstrap classes.", "This is my GitHub page where my future works will be added.", "I created an HTML website that utilizes a free public API with JSON return. It's about countries' region, language, etc."]
+        var links = ["https://drive.google.com/file/d/1d581GIvDVIDjiFU-I0jtAuAC_T32WMiW/view?usp=sharing", "SAM 02/index.html", "index.html", "SAM 04/index.html"]
+        var images = ["img/SAM01.webp", "img/SAM02.webp", "img/SAM03.webp", "img/SAM04.webp"];
+
+        for (var i = 0; i < names.length; i++) {
+            var projectContent = document.getElementById("project-content");
+            projectContent.innerHTML += `<div class="col-12 col-lg-4 col-md-6 d-flex align-items-stretch my-3">
+                    <div class="card">
+                        <a href="${links[i]}" class="text-decoration-none">
+                            <img src="${images[i]}" class="card-img-top" alt="${names[i]}">
+                            <div class="card-body">
+                                <h3 class="card-title title-text mt-0">${names[i]}</h3>
+                                <p class="card-text my-0 description-text" style="font-size: 1rem;">${description[i]}
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>`;
+        }
     </script>
 
 </body>

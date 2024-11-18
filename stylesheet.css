@@ -308,7 +308,6 @@ img {
     }
     .marquee {
         flex-direction: row;
-        overflow: visible;
     }
     .marquee-content img {
         margin: 0 1rem;

@@ -27,6 +27,11 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+div {
+    display: block;
+    unicode-bidi: isolate;
+}
+
 h3 {
     margin-top: 0;
     margin-bottom: 0;
@@ -49,6 +54,14 @@ section {
 img {
     max-width: 100%;
     display: inline-block;
+}
+
+.heading-2 {
+    white-space: normal;
+    margin-bottom: 1rem;
+    font-size: 3rem;
+    font-weight: 400;
+    line-height: 3.5rem;
 }
 
 .overline {
@@ -92,7 +105,6 @@ img {
 
 .featuredName {
     font-size: 4rem;
-    /* 2rem kapag mobile */
     line-height: 4rem;
 }
 
@@ -153,16 +165,14 @@ img {
 .marquee {
     overflow: hidden;
     white-space: nowrap;
-    padding-top: 3rem;
-}
-
-.marquee:hover .marquee-content {
-    animation-play-state: paused;
+    padding-bottom: 3rem;
+    background-color: #f2f0ee;
 }
 
 .marquee-content {
     display: inline-block;
-    animation: slide 40s infinite linear;
+    animation: slide 25s infinite linear;
+
 }
 
 .marquee-content img {
@@ -191,13 +201,18 @@ img {
     text-decoration: none;
     display: flex;
     background-color: #f2f0ee;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0 9px rgba(0, 0, 0, 0.4);
 }
 
 .card img {
     width: 100%;
     height: auto;
     border-radius: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.3rem;
 }
 
 .card-title {
@@ -206,10 +221,102 @@ img {
 }
 
 .project-title {
-    font-size: 2rem;
+    font-size: 2.5rem;
     max-width: 48rem;
     white-space: normal;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 2.25rem;
+}
+
+
+/* about */
+.about {
+    background-color: #f2f0ee;
+    border-top: 2px solid #b5b3b1;
+    overflow: hidden;
+}
+
+.carousel-inner {
+    border-radius: 2.25rem;
+    margin-top: 1rem;
+}
+
+.fave-softwares {
+    border-top: 2px solid #f2f0ee;
+    background-color: white;
+    background-image: url(https://cdn.prod.website-files.com/6462308e001a70f67d5e9d4d/646cf6a27f3bdaa179a32079_plugins_bk_gradient.webp);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding-bottom: 0;
+}
+
+.container-fave {
+    max-width: 78rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    overflow: visible;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.fave-info {
+    float: left;
+    min-height: 1px;
+    padding-left: 10px;
+    padding-right: 10px;
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.w-col {
+    float: left;
+    width: 100%;
+    min-height: 1px;
+    padding-left: 10px;
+    padding-right: 10px;
+    position: relative;
+}
+
+.w-col-8 {
+    width: 66.6667%;
+}
+
+.w-col-4 {
+    width: 33.3333%;
+}
+
+.softwares {
+    background-color: #f2f0ee;
+    border-radius: 36px 36px 0;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+}
+
+.software-grid {
+    grid-column-gap: 1.5rem;
+    grid-row-gap: 1rem;
+    grid-template-rows: auto auto;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-auto-columns: 1fr;
+    display: grid;
+}
+
+.plugin-block {
+    background-color: white;
+    border-radius: 1rem;
+    justify-content: center;
+    align-items: center;
+    height: 110px;
+    padding: 1rem;
+    text-decoration: none;
+    display: flex;
+    transition: box-shadow 0.3s ease;
+}
+.plugin-block:hover {
+    box-shadow: 0 0 9px rgba(0, 0, 0, 0.4);
+}
+.plugin-block img {
+    max-height: 100%;
 }

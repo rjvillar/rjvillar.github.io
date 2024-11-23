@@ -426,26 +426,23 @@ img {
     height: 100vh;
 }
 
-.box-404 {
-    position: fixed;
-    bottom: 0;
-    margin: 8rem -1.5rem;
-    padding: 1rem;
-}
-
-.msg-404 {
-    text-shadow: #1A100B 0px 0px 10px;
+.message-container {
+    margin-top: 24rem;
+    margin-left: -14.5rem;
 }
 
 .btn-404 {
-    color: #1A100B;
-    background-color: #f2f0ee;
+    color: #f2f0ee;
+    background-color: #1A100B;
     border: none;
     font-weight: 600;
 }
 
 .btn-404:hover {
-    background-color: #1A100B;
+    background-color: #0a0604;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 
@@ -627,6 +624,18 @@ img {
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+    .message-container {
+        margin-top: 16rem;
+        margin-left: 0;
+    }
+
+    .msg-col {
+        padding-left: 0;
+    }
+
+    #error-message {
+        text-align: center;
     }
     
 }

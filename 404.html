@@ -25,6 +25,10 @@
             body {
                 background-image: url('img/error\ 404-mobile.webp');
             }
+
+            #navbar {
+                background-color: transparent;
+            }
         }
     </style>
 </head>
@@ -57,12 +61,13 @@
         </div>
     </nav>
 
-    <div class="section-404">
+    <div class="section-404 d-flex align-items-center justify-content-center">
         <div class="container">
-            <div class="row">
-                <div class="col-12 col-lg-4 col-md-6 align-items-stretch box-404" >
-                    <p class="description-text text-white msg-404">It looks like the page you are looking for doesn't
-                        exist. But don't worry, you can find plenty of other things on our homepage.</p>
+            <div class="row justify-content-center message-container">
+                <div class="col-12 col-lg-4 col-md-6 msg-col">
+                    <p id="error-message" class="description-text">It looks like the page you are looking for doesn't
+                        <br>exist. But don't worry, you can find plenty of other <br>things on our homepage.
+                    </p>
                     <a href="index.html" class="btn btn-primary description-text btn-404">Back to Home</a>
                 </div>
             </div>
@@ -85,6 +90,18 @@
             }
         }
         window.addEventListener("scroll", navShadow);
+
+        function adjustErrorMessage() {
+            const errorMessage = document.getElementById("error-message");
+            if (window.innerWidth <= 767) {
+                errorMessage.innerHTML = "It looks like the page you are looking for doesn't exist. But don't worry, you can find plenty of other things on our homepage.";
+            } else {
+                errorMessage.innerHTML = "It looks like the page you are looking for doesn't<br>exist. But don't worry, you can find plenty of other<br>things on our homepage.";
+            }
+        }
+
+        window.addEventListener("resize", adjustErrorMessage);
+        window.addEventListener("load", adjustErrorMessage);
     </script>
 
 </body>

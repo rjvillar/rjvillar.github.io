@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="stylesheet.css" type="text/css">
 </head>
 
-<body oncontextmenu="return false">
+<body >
     <nav id="navbar" class="navbar navbar-expand-lg fs-3 fixed-top">
         <div class="container">
             <a class="navbar-brand" href="index.html">
@@ -53,7 +53,14 @@
                 <div class="col-lg-6 col-sm-12">
                     <div class="text-lg-start featured-text">
                         <h2 class="title-text ftextstart">Hi, I'm RJ,</h2>
-                        <h2 class="title-text featuredName">a <strong class="typedText"></strong></h2>
+                        <ol style="padding-left: 0;">
+                            <li class="title-text featuredName">a <span class="gradient-text">Student.</span></li>
+                            <li class="title-text featuredName">a <span class="gradient-text">Developer.</span></li>
+                            <li class="title-text featuredName">a <span class="gradient-text">UI/UX Dev.</span></li>
+                            <li class="title-text featuredName">a <span class="gradient-text">Programmer.</span></li>
+                            <li class="title-text featuredName">a <span class="gradient-text">Furdad.</span></li>
+                            <li class="title-text featuredName">a <span class="gradient-text">Human.</span></li>
+                        </ol>
                         <p class="description-text featuredInfo">I'm a young IT student with 3 years of experience, but
                             a huge motivation to create, develop, and build something useful, user-friendly, and
                             beautiful.</p>
@@ -402,7 +409,6 @@
     </div>
     </div>
 
-    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
@@ -426,16 +432,7 @@
                 i = i + speed;
             }, 0);
         }
-
         window.addEventListener('load', Marquee('.marquee', 0.5))
-
-        var typingEffect = new Typed(".typedText", {
-            strings: ["Student.", "Developer.", "UI/UX Dev.", "Gamer.", "Furdad."],
-            loop: true,
-            typeSpeed: 100,
-            backSpeed: 80,
-            backDelay: 2000
-        })
 
         function navShadow() {
             const navHeader = document.getElementById("navbar")

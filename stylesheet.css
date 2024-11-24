@@ -16,10 +16,20 @@
     color: #1A100B;
 }
 
+.gradient-text {
+    background: linear-gradient(80deg, #ED2B70, #353982, #009EA8, #0F6AA1, #E62D6B, #FE9C1F);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 
 /* html */
 * {
     box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
@@ -103,13 +113,61 @@ img {
     padding: 6.5rem 2rem 6.5rem 2rem;
 }
 
+.featured-text ol {
+    height: 4.2rem;
+    line-height: 4.15rem;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+@keyframes slide-up {
+
+    0%,
+    10% {
+        transform: translateY(0%);
+    }
+
+    15%,
+    25% {
+        transform: translateY(-100%);
+    }
+
+    30%,
+    40% {
+        transform: translateY(-200%);
+    }
+
+    45%,
+    55% {
+        transform: translateY(-300%);
+    }
+
+    60%,
+    70% {
+        transform: translateY(-400%);
+    }
+
+    75%,
+    85% {
+        transform: translateY(-500%);
+    }
+}
+
+.featured-text span {
+    display: inline-block;
+    animation: slide-up 12s infinite;
+    animation-delay: 1s;
+    font-weight: 900;
+}
+
 .ftextstart {
     font-size: 4rem;
+    margin-bottom: 0;
 }
 
 .featuredName {
+    list-style: none;
     font-size: 4rem;
-    line-height: 4rem;
 }
 
 .featuredInfo {
@@ -476,6 +534,7 @@ img {
         height: 70px;
         padding: 4px 2px;
     }
+
     .box-404 {
         margin: 8rem 0rem;
     }
@@ -493,7 +552,6 @@ img {
     }
 
     .ftextstart,
-    .featuredName,
     .project-title {
         font-size: 2rem;
         line-height: 2.6rem;
@@ -501,7 +559,18 @@ img {
 
     .ftextstart {
         margin-top: 0;
-        margin-bottom: -0.5rem;
+        margin-bottom: -0.2rem;
+    }
+
+    .featuredName {
+        font-size: 2rem;
+    }
+
+    .featured-text ol {
+        height: 2.2rem;
+        line-height: 2.15rem;
+        overflow: hidden;
+        white-space: nowrap;
     }
 
     .featuredInfo {
@@ -614,6 +683,7 @@ img {
         justify-content: center;
         align-items: center;
     }
+
     .message-container {
         margin-top: 16rem;
         margin-left: 0;
@@ -626,7 +696,7 @@ img {
     #error-message {
         text-align: center;
     }
-    
+
 }
 
 @media screen and (max-width: 991px) {

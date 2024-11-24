@@ -89,6 +89,14 @@ img {
     background-color: #f2f0ee;
 }
 
+.nav-link {
+    transition: font-weight 0.3s ease;
+}
+
+.nav-link:hover {
+    font-weight: 800;
+}
+
 
 /* hero section */
 .section-hero {

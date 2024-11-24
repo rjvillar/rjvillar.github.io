@@ -409,13 +409,25 @@
 
     <script>
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const marqueeContent = document.querySelector('.marquee-content');
-            for (let i = 0; i < 4; i++) {
-                const marqueeClone = marqueeContent.cloneNode(true);
-                marqueeContent.parentNode.appendChild(marqueeClone);
-            }
-        });
+        function Marquee(selector, speed) {
+            const parentSelector = document.querySelector(selector);
+            const clone = parentSelector.innerHTML;
+            const firstElement = parentSelector.children[0];
+            let i = 0;
+            console.log(firstElement);
+            parentSelector.insertAdjacentHTML('beforeend', clone);
+            parentSelector.insertAdjacentHTML('beforeend', clone);
+
+            setInterval(function () {
+                firstElement.style.marginLeft = `-${i}px`;
+                if (i > firstElement.clientWidth) {
+                    i = 0;
+                }
+                i = i + speed;
+            }, 0);
+        }
+
+        window.addEventListener('load', Marquee('.marquee', 0.5))
 
         var typingEffect = new Typed(".typedText", {
             strings: ["Student.", "Developer.", "UI/UX Dev.", "Gamer.", "Furdad."],
@@ -437,7 +449,7 @@
         }
         window.addEventListener("scroll", navShadow);
 
-        var names = ["SAM A01", "SAM A02", "SAM A03", "SAM A04","SAM M01"]
+        var names = ["SAM A01", "SAM A02", "SAM A03", "SAM A04", "SAM M01"]
         var description = ["Using creative skills, I created a tri-fold A4 brochure that showcases the Wuthering Waves' system attributes, properties, and characteristics.", "I created an HTML website about the beauty of El Nido, Palawan. This website is responsive because of Bootstrap classes.", "This is my GitHub page where my future works will be added.", "I created an HTML website that utilizes a free public API with JSON return. It's about countries' region, language, etc.", "A fan-made Wuthering Waves website featuring embedded YouTube videos for an immersive experience. Stay updated with the latest game developments."]
         var links = ["https://drive.google.com/file/d/1d581GIvDVIDjiFU-I0jtAuAC_T32WMiW/view?usp=sharing", "SAM A02/index.html", "index.html", "SAM A04/index.html", "SAM M01/index.html"]
         var images = ["img/activities/SAM A01.webp", "img/activities/SAM A02.webp", "img/activities/SAM A03.webp", "img/activities/SAM A04.webp", "img/activities/SAM M01.webp"];

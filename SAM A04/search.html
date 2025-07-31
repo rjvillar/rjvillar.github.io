@@ -50,7 +50,7 @@
 
             var query = document.getElementById('countryInput').value;
 
-            fetch(`https://restcountries.com/v3.1/all`)
+            fetch(`https://restcountries.com/v3.1/all?fields=name,flags`)
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
@@ -64,7 +64,7 @@
             var countryInput = document.getElementById("countryInput").value.toLowerCase();
 
             try {
-                var response = await fetch('https://restcountries.com/v3.1/all');
+                var response = await fetch('https://restcountries.com/v3.1/all?fields=name,region,subregion,languages');
                 var countries = await response.json();
 
                 var filteredCountries = countries.filter(country => country.name.common.toLowerCase().includes(countryInput));
@@ -112,7 +112,7 @@
             getCountry();
         });
 
-        window.addEventListener('load', function() {
+        window.addEventListener('load', function () {
             const urlParameters = new URLSearchParams(window.location.search);
             if (urlParameters.has("countryName")) {
                 const countryName = urlParameters.get("countryName");

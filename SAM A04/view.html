@@ -74,7 +74,7 @@
 
         const getCountry = async (countryName) => {
             try {
-                var response = await fetch('https://restcountries.com/v3.1/all');
+                var response = await fetch('https://restcountries.com/v3.1/all?fields=name,flags,cca2,currencies,demonyms,languages,capital,region,subregion');
                 var countries = await response.json();
                 var country = countries.find(c => c.name.common.toLowerCase() === countryName.toLowerCase());
 

@@ -192,9 +192,7 @@ img {
 }
 
 .icon1,
-.icon2,
-.icon3,
-.icon4 {
+.icon2 {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -205,23 +203,10 @@ img {
 }
 
 .icon1 {
-  background: linear-gradient(to right,
-      #feda75,
-      #fa7e1e,
-      #d62976,
-      #962fbf,
-      #4f5bd5);
-}
-
-.icon2 {
-  background: #3b5998;
-}
-
-.icon3 {
   background: #171515;
 }
 
-.icon4 {
+.icon2 {
   background: #0077b5;
 }
 

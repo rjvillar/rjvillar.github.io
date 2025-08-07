@@ -12,6 +12,7 @@ import search_icon from './search.png'
 import shuffle_icon from './shuffle.png'
 import speaker_icon from './speaker.png'
 import stack_icon from './stack.png'
+import library_icon from './library.png'
 import zoom_icon from './zoom.png'
 import plus_icon from './plus.png'
 import arrow_icon from './arrow.png'
@@ -21,26 +22,33 @@ import volume_icon from './volume.png'
 import arrow_right from './right_arrow.png'
 import arrow_left from './left_arrow.png'
 import spotify_logo from './spotify_logo.png'
+import spotify from './spotify-logo.webp'
 import clock_icon from './clock_icon.png'
-import img1 from './img1.jpg'
-import img2 from './img2.jpg'
-import img3 from './img3.jpg'
-import img4 from './img4.jpg'
-import img5 from './img5.jpg'
-import img6 from './img6.jpg'
-import img7 from './img7.jpg'
-import img8 from './img8.jpg'
-import img9 from './img9.jpg'
-import img10 from './img10.jpg'
-import img11 from './img11.jpg'
-import img12 from './img12.jpg'
-import img13 from './img13.jpg'
-import img14 from './img14.jpg'
-import img15 from './img15.jpg'
-import img16 from './img16.jpg'
-import song1 from './song1.mp3'
-import song2 from './song2.mp3'
-import song3 from './song3.mp3'
+import install_icon from './install.png'
+import the_subway from './the_subway.jpg'
+import the_subway_song from './the_subway.mp3'
+import cup_of_joe from './cup_of_joe.jpg'
+import folded from './folded.jpg'
+import folded_song from './folded.mp3'
+import daisies from './daisies.jpg'
+import daisies_song from './daisies.mp3'
+import back_to_friends from './back_to_friends.jpg'
+import back_to_friends_song from './back_to_friends.mp3'
+import love_me_not from './love_me_not.jpg'
+import love_me_not_song from './love_me_not.mp3'
+import strong from './strong.jpg'
+import strong_song from './strong.mp3'
+import backburner from './backburner.jpg'
+import backburner_song from './backburner.mp3'
+import pogi from './pogi.jpg'
+import pogi_song from './pogi.mp3'
+import earl_augustin from './earl_augustin.jpg'
+import niki from './niki.jpg'
+import dionela from './dionela.jpg'
+import ariana_grande from './ariana_grande.jpg'
+import taylor_swift from './taylor_swift.jpg'
+import arthur_nery from './arthur_nery.jpg'
+import maroon_5 from './maroon_5.jpg'
 
 export const assets = {
     bell_icon,
@@ -66,117 +74,134 @@ export const assets = {
     arrow_left,
     arrow_right,
     spotify_logo,
-    clock_icon
+    clock_icon,
+    spotify,
+    library_icon,
+    install_icon
 }
 
-export const albumsData = [
+export const artistData = [
     {
         id: 0,
-        name: "Top 50 Global",
-        image: img8,
-        desc: "Your weekly update of the most played tracks",
-        bgColor: "#2a4365"
+        name: "Cup of Joe",
+        image: cup_of_joe,
+        type: "Artist",
+        bgColor: "#bb3b27"
     },
     {
         id: 1,
-        name: "Top 50 Philippines",
-        image: img9,
-        desc: "Your weekly update of the most played tracks",
-        bgColor: "#22543d"
+        name: "Earl Augustin",
+        image: earl_augustin,
+        type: "Artist",
+        bgColor: "#cc9565"
     },
     {
         id: 2,
-        name: "Trending Philippines",
-        image: img10,
-        desc: "Your weekly update of the most played tracks",
-        bgColor: "#742a2a"
+        name: "NIKI",
+        image: niki,
+        type: "Artist",
+        bgColor: "#ab9882"
     },
     {
         id: 3,
-        name: "Trending Global",
-        image: img16,
-        desc: "Your weekly update of the most played tracks",
-        bgColor: "#44337a"
+        name: "Dionela",
+        image: dionela,
+        type: "Artist",
+        bgColor: "#414640"
     },
     {
         id: 4,
-        name: "Mega Hits,",
-        image: img11,
-        desc: "Your weekly update of the most played tracks",
-        bgColor: "#234e52"
+        name: "Ariana Grande",
+        image: ariana_grande,
+        type: "Artist",
+        bgColor: "#95d2df"
     },
     {
         id: 5,
-        name: "Happy Favorites",
-        image: img15,
-        desc: "Your weekly update of the most played tracks",
-        bgColor: "#744210"
+        name: "Taylor Swift",
+        image: taylor_swift,
+        type: "Artist",
+        bgColor: "#bfbab3"
+    },
+    {
+        id: 6,
+        name: "Arthur Nery",
+        image: arthur_nery,
+        type: "Artist",
+        bgColor: "#b7b0ae"
+    },
+    {
+        id: 7,
+        name: "Maroon 5",
+        image: maroon_5,
+        type: "Artist",
+        bgColor: "#c6b89e"
     }
 ]
 
 export const songsData = [
     {
         id: 0,
-        name: "Song One",
-        image: img1,
-        file: song1,
-        desc: "Put a smile on your face with these happy tunes",
-        duration: "3:00"
+        name: "The Subway",
+        image: the_subway,
+        file: the_subway_song,
+        artist: "Chappell Roan",
+        duration: "4:12"
     },
     {
         id: 1,
-        name: "Song Two",
-        image: img2,
-        file: song2,
-        desc: "Put a smile on your face with these happy tunes",
-        duration: "2:20"
+        name: "Folded",
+        image: folded,
+        file: folded_song,
+        artist: "Kehlani",
+        duration: "3:58"
     },
     {
         id: 2,
-        name: "Song Three",
-        image: img3,
-        file: song3,
-        desc: "Put a smile on your face with these happy tunes",
-        duration: "2:32"
+        name: "Daisies",
+        image: daisies,
+        file: daisies_song,
+        artist: "Justin Bieber",
+        duration: "2:56"
     },
     {
         id: 3,
-        name: "Song Four",
-        image: img4,
-        file: song1,
-        desc: "Put a smile on your face with these happy tunes",
-        duration: "2:50"
+        name: "back to friends",
+        image: back_to_friends,
+        file: back_to_friends_song,
+        artist: "sombr",
+        duration: "3:19"
     },
     {
         id: 4,
-        name: "Song Five",
-        image: img5,
-        file: song2,
-        desc: "Put a smile on your face with these happy tunes",
-        duration: "3:10"
+        name: "Love Me Not",
+        image: love_me_not,
+        file: love_me_not_song,
+        artist: "Ravyn Lenae",
+        duration: "3:33"
     },
     {
         id: 5,
-        name: "Song Six",
-        image: img14,
-        file: song3,
-        desc: "Put a smile on your face with these happy tunes",
-        duration: "2:45"
+        name: "Strong",
+        image: strong,
+        file: strong_song,
+        artist: "One Direction",
+        duration: "3:04"
     },
     {
         id: 6,
-        name: "Song Seven",
-        image: img7,
-        file: song1,
-        desc: "Put a smile on your face with these happy tunes",
-        duration: "2:18"
+        name: "Backburner",
+        image: backburner,
+        file: backburner_song,
+        artist: "NIKI",
+        duration: "3:56"
     },
     {
         id: 7,
-        name: "Song Eight",
-        image: img12,
-        file: song2,
-        desc: "Put a smile on your face with these happy tunes",
-        duration: "2:35"
+        name: "Pogi",
+        image: pogi,
+        file: pogi_song,
+        artist: "Paul N Ballin",
+        duration: "3:03"
     }
 ]

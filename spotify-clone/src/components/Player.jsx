@@ -18,13 +18,13 @@ const Player = () => {
     seekSong,
   } = useContext(PlayerContext);
   return (
-    <div className="h-[10%] bg-black flex justify-between items-center text-white px-4">
+    <div className="h-[90%] bg-black flex justify-between items-center text-white px-4">
       <div className="hidden lg:flex items-center gap-4">
-        <img className="w-12" src={track.image} alt="" />
+        <img className="w-12 rounded-sm" src={track.image} alt="" />
         <div>
-          <p>{track.name}</p>
+          <p className="font-semibold">{track.name}</p>
         </div>
-        <p>{track.desc.slice(0, 12)}</p>
+        <p>{track.artist.split(0, 12)}</p>
       </div>
       <div className="flex flex-col items-center gap-1 m-auto">
         <div className="flex gap-4">

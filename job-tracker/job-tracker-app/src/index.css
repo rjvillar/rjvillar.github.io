@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./assets/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./assets/fonts/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Gill Sans';
+  src: url('./assets/fonts/Gill\ Sans\ Heavy.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+.gill {
+  font-family: 'Gill Sans', sans-serif;
+}
+
+* {
+  font-family: 'Inter', sans-serif;
+}

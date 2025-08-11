@@ -90,13 +90,13 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-between pt-8 pb-6 px-9 sm:py-6 relative">
+    <div className="z-40 flex items-center justify-between pt-8 pb-6 px-7 sm:px-10 sm:pt-9 relative">
       <div
         onClick={handleHomeClick}
         className="flex items-center justify-center gap-3 cursor-pointer"
       >
-        <img className="w-6.5" src={assets.logo} alt="" />
-        <p className="font-black text-[1rem] text-[#193948]">Hustlr</p>
+        <img className="w-9" src={assets.logo} alt="" />
+        <p className="font-black text-[1.25rem] text-[#193948]">Hustlr</p>
       </div>
 
       {/* FOR DESKTOP */}

@@ -17,6 +17,7 @@ import {
   Info,
   ShieldAlert,
   Settings as SettingsIcon,
+  LogOut,
 } from "lucide-react";
 
 function NavbarHome() {
@@ -281,6 +282,20 @@ function NavbarHome() {
                 <div className="flex-1">
                   <p className="text-sm font-medium">Settings</p>
                   <p className="text-xs text-[#5b6d76]">Preferences & theme</p>
+                </div>
+              </button>
+
+              <button
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-black/5 focus:bg-black/5 text-left text-[#193948] focus:outline-none cursor-pointer"
+              >
+                <span className="h-8 w-8 grid place-items-center rounded-xl bg-white/90 border border-white/60">
+                  <LogOut className="h-4.5 w-4.5 text-[#f44336]" />
+                </span>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Sign out</p>
+                  <p className="text-xs text-[#5b6d76]">End your session</p>
                 </div>
               </button>
             </motion.div>

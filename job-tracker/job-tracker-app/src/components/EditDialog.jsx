@@ -106,7 +106,6 @@ export default function EditDialog({ job, isOpen, onClose, onSave, onDelete }) {
 
       const updatedJob = await updateJob(job._id, updatedData, token);
 
-      // Call the onSave callback with the updated job
       if (onSave) {
         onSave(updatedJob);
       }
@@ -141,7 +140,6 @@ export default function EditDialog({ job, isOpen, onClose, onSave, onDelete }) {
     try {
       await deleteJob(job._id, token);
 
-      // Call the onDelete callback
       if (onDelete) {
         onDelete(job);
       }

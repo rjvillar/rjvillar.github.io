@@ -12,14 +12,12 @@ async function handleResponse(response) {
   }
 
   if (!response.ok) {
-    // Remove the automatic redirect - let components handle auth errors
     throw new Error(data.message || `Request failed with status ${response.status}`);
   }
 
   return data;
 }
 
-// Auth functions
 export async function loginUser(email, password) {
   const response = await fetch(`${API_URL}/auth/login`, {
     method: "POST",

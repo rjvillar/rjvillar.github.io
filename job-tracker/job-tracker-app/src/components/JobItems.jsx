@@ -314,7 +314,6 @@ const JobItems = forwardRef(({ filter, searchQuery }, ref) => {
                 </div>
               </div>
 
-              {/* Hide edit/delete buttons on small screens */}
               <div className="hidden sm:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={(e) => {

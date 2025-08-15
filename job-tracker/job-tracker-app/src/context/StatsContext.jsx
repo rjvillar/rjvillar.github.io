@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useContext,
+  useStats,
 } from "react";
 import useAuth from "../hooks/useAuth";
 import { getStats } from "../api";

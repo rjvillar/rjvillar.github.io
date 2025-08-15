@@ -30,13 +30,8 @@ const STATUS_META = {
     icon: ListPlus,
     classes: "bg-blue-100 text-blue-800",
   },
-  rejected: {
-    label: "Rejected",
-    icon: XCircle,
-    classes: "bg-red-100 text-red-800",
-  },
-  interviewed: {
-    label: "Interviewed",
+  interviewing: {
+    label: "Interviewing",
     icon: MessageCircle,
     classes: "bg-yellow-100 text-yellow-800",
   },
@@ -44,6 +39,16 @@ const STATUS_META = {
     label: "Accepted",
     icon: CheckCircle,
     classes: "bg-green-100 text-green-800",
+  },
+  rejected: {
+    label: "Rejected",
+    icon: XCircle,
+    classes: "bg-red-100 text-red-800",
+  },
+  withdrawn: {
+    label: "Withdrawn",
+    icon: XCircle,
+    classes: "bg-gray-100 text-gray-800",
   },
   pending: {
     label: "Pending",
@@ -59,9 +64,10 @@ const STATUS_META = {
 
 const STATUS_SOFT = {
   applied: "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
-  rejected: "bg-red-50 text-red-700 ring-1 ring-red-200",
-  interviewed: "bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200",
+  interviewing: "bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200",
   accepted: "bg-green-50 text-green-700 ring-1 ring-green-200",
+  rejected: "bg-red-50 text-red-700 ring-1 ring-red-200",
+  withdrawn: "bg-gray-50 text-gray-700 ring-1 ring-gray-200",
   pending: "bg-gray-50 text-gray-700 ring-1 ring-gray-200",
   default: "bg-gray-50 text-gray-700 ring-1 ring-gray-200",
 };
@@ -69,8 +75,8 @@ const STATUS_SOFT = {
 const LOCATION_META = {
   remote: { label: "Remote", icon: Laptop },
   hybrid: { label: "Hybrid", icon: Home },
-  "on-site": { label: "On-site", icon: Building2 },
   onsite: { label: "On-site", icon: Building2 },
+  "on-site": { label: "On-site", icon: Building2 },
   office: { label: "On-site", icon: Building2 },
   default: { label: "On-site", icon: Building2 },
 };
@@ -125,19 +131,30 @@ function LocationPill({ type, showLabel = false }) {
 }
 
 export default function JobDetailsDialog({
-  open,
-  onOpenChange,
   job,
+  isOpen,
+  onClose,
   onEditClick,
 }) {
   if (!job) return null;
 
+  const handleEditClick = () => {
+    if (onEditClick) {
+      onEditClick(job);
+    }
+    onClose();
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString();
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
                    bg-white rounded-3xl p-0 shadow-[0_24px_48px_-20px_rgba(0,0,0,0.25)]
-                   w-[calc(100vw-2rem)] sm:w-auto sm:max-w-2xl overflow-hidden"
+                   w-[calc(100vw-1rem)] sm:w-[calc(100vw-2rem)] md:w-auto md:max-w-2xl overflow-hidden"
         showCloseButton={false}
       >
         <DialogClose asChild>
@@ -146,7 +163,7 @@ export default function JobDetailsDialog({
             aria-label="Close dialog"
             className="absolute top-3 right-3 sm:top-4 sm:right-4 h-10 w-10 grid place-items-center
                        rounded-full bg-white border border-[#eef3f6] text-[#193948]
-                       shadow-sm hover:bg-[#fafafa] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FCDC73]/50 cursor-pointer"
+                       shadow-sm hover:bg-[#fafafa] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FCDC73]/50 cursor-pointer z-10"
           >
             <CloseIcon className="h-5 w-5" />
           </button>
@@ -158,65 +175,69 @@ export default function JobDetailsDialog({
           transition={{ type: "spring", stiffness: 420, damping: 34 }}
           className="text-[#193948]"
         >
-          <DialogHeader className="px-5 sm:px-6 pr-14 sm:pr-16 pt-5 sm:pt-6 pb-3 sm:pb-4 border-b border-[#e9eef2]">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-2xl bg-white border border-[#eef3f6] shadow-sm grid place-items-center shrink-0">
+          <DialogHeader className="px-4 sm:px-5 md:px-6 pr-12 sm:pr-14 md:pr-16 pt-4 sm:pt-5 md:pt-6 pb-3 sm:pb-4 border-b border-[#e9eef2]">
+            <div className="flex items-start gap-3 min-w-0">
+              <div className="h-10 w-10 rounded-2xl bg-white border border-[#eef3f6] shadow-sm grid place-items-center shrink-0 mt-1">
                 <span className="text-[.8rem] font-semibold">
                   {initialsOf(job.company)}
                 </span>
               </div>
-              <div className="min-w-0">
-                <DialogTitle className="text-left text-lg sm:text-xl leading-snug truncate">
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <DialogTitle className="text-left text-base sm:text-lg md:text-xl leading-tight break-words hyphens-auto">
                   {job.title}
                 </DialogTitle>
-                <DialogDescription className="text-left text-sm text-[#5b6d76] truncate">
+                <DialogDescription className="text-left text-sm text-[#5b6d76] break-words mt-1">
                   {job.company}
                 </DialogDescription>
               </div>
             </div>
           </DialogHeader>
 
-          <div className="p-5 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+          <div className="p-4 sm:p-5 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
             {/* Address */}
-            <section className="rounded-2xl border border-[#eef3f6] px-3.5 py-3 sm:px-4 sm:py-3.5 md:col-span-2 md:col-start-1 md:row-start-1">
+            <section className="rounded-2xl border border-[#eef3f6] px-3 py-2.5 sm:px-3.5 sm:py-3 md:px-4 md:py-3.5 md:col-span-2 md:col-start-1 md:row-start-1">
               <p className="text-xs text-[#5b6d76] mb-1">Address</p>
               <p className="text-sm break-words">
                 <MapPin className="inline-block h-4 w-4 mr-1 align-[-2px] text-[#193948]/70" />
-                {job.address}
+                <span className="break-all">{job.address}</span>
               </p>
             </section>
 
             {/* Location */}
-            <section className="rounded-2xl border border-[#eef3f6] px-3.5 py-3 sm:px-4 sm:py-3.5 md:col-span-1 md:col-start-3 md:row-start-2">
+            <section className="rounded-2xl border border-[#eef3f6] px-3 py-2.5 sm:px-3.5 sm:py-3 md:px-4 md:py-3.5 md:col-span-1 md:col-start-3 md:row-start-2">
               <p className="text-xs text-[#5b6d76] mb-1">Location</p>
               <div>
-                <LocationPill type={job.locationType} showLabel />
+                <LocationPill type={job.location} showLabel />
               </div>
             </section>
 
             {/* Status */}
             <StatusField
               status={job.status}
-              className="md:col-span-1 md:col-start-3 md:row-start-1"
+              className="px-3 py-2.5 sm:px-3.5 sm:py-3 md:px-4 md:py-3.5 md:col-span-1 md:col-start-3 md:row-start-1"
             />
 
             {/* Notes */}
-            <section className="rounded-2xl border border-[#eef3f6] px-3.5 py-3 sm:px-4 sm:py-3.5 md:col-span-2 md:col-start-1 md:row-start-2 md:row-span-2">
+            <section className="rounded-2xl border border-[#eef3f6] px-3 py-2.5 sm:px-3.5 sm:py-3 md:px-4 md:py-3.5 md:col-span-2 md:col-start-1 md:row-start-2 md:row-span-2">
               <p className="text-xs text-[#5b6d76] mb-1">Notes</p>
-              <p className="text-sm leading-relaxed">
+              <p className="text-sm leading-relaxed break-words">
                 <StickyNote className="inline-block h-4 w-4 mr-1 align-[-2px] text-[#193948]/70" />
-                {job.notes}
+                <span className="break-words">
+                  {job.notes || "No notes added"}
+                </span>
               </p>
             </section>
 
-            {/* Created */}
-            <section className="rounded-2xl border border-[#eef3f6] px-3.5 py-3 sm:px-4 sm:py-3.5 md:col-span-1 md:col-start-3 md:row-start-3">
-              <p className="text-xs text-[#5b6d76] mb-1">Created</p>
-              <p className="text-sm">{job.createdAt}</p>
+            {/* Date Applied */}
+            <section className="rounded-2xl border border-[#eef3f6] px-3 py-2.5 sm:px-3.5 sm:py-3 md:px-4 md:py-3.5 md:col-span-1 md:col-start-3 md:row-start-3">
+              <p className="text-xs text-[#5b6d76] mb-1">Date Applied</p>
+              <p className="text-sm">
+                {formatDate(job.dateApplied || job.createdAt)}
+              </p>
             </section>
           </div>
 
-          <DialogFooter className="px-5 sm:px-6 py-4 border-t border-[#e9eef2]">
+          <DialogFooter className="px-4 sm:px-5 md:px-6 py-3 sm:py-4 border-t border-[#e9eef2]">
             <div className="flex w-full items-center">
               <motion.button
                 type="button"
@@ -234,7 +255,7 @@ export default function JobDetailsDialog({
                            hover:brightness-[.98] active:brightness-95
                            focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FCDC73]/60 transition-transform cursor-pointer
                            w-full md:w-auto md:ml-auto justify-center"
-                onClick={onEditClick}
+                onClick={handleEditClick}
               >
                 <span className="pointer-events-none absolute inset-0">
                   <span

@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+} from "react";
 import { motion } from "framer-motion";
 import {
   Pencil,
@@ -12,302 +18,354 @@ import {
   MessageCircle,
   CheckCircle,
   Hourglass,
+  Trash2,
+  Edit,
 } from "lucide-react";
 import { X as CloseIcon } from "lucide-react";
 import { Badge } from "../components/ui/badge";
 import JobDetailsDialog from "./JobDetailsDialog";
 import EditDialog from "./EditDialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
+import useAuth from "../hooks/useAuth";
+import { getJobs, deleteJob } from "../api";
 
-const jobs = [
-  {
-    id: 1,
-    company: "Google Inc.",
-    title: "Frontend Engineer",
-    address: "1600 Amphitheatre Pkwy, Mountain View, CA",
-    locationType: "Hybrid",
-    status: "Accepted",
-    notes: "Waiting for recruiter's feedback from phone screen.",
-    createdAt: "Aug 2, 2025",
-  },
-  {
-    id: 2,
-    company: "Spotify",
-    title: "Full-Stack Developer",
-    address: "4 World Trade Center, New York, NY",
-    locationType: "On-site",
-    status: "Applied",
-    notes: "Submitted via referral; include portfolio link next follow-up.",
-    createdAt: "Jul 29, 2025",
-  },
-  {
-    id: 3,
-    company: "Microsoft",
-    title: "UI Engineer",
-    address: "Redmond, WA",
-    locationType: "Remote",
-    status: "Interviewed",
-    notes: "Panel next week. Prepare system design notes.",
-    createdAt: "Aug 3, 2025",
-  },
-];
+const JobItems = forwardRef(({ filter, searchQuery }, ref) => {
+  const { token } = useAuth();
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [editingJob, setEditingJob] = useState(null);
 
-const LOCATION_META = {
-  remote: { label: "Remote", icon: Laptop },
-  hybrid: { label: "Hybrid", icon: Home },
-  "on-site": { label: "On-site", icon: Building2 },
-  onsite: { label: "On-site", icon: Building2 },
-  office: { label: "On-site", icon: Building2 },
-  default: { label: "On-site", icon: Building2 },
-};
+  useEffect(() => {
+    const fetchJobs = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
 
-function initialsOf(name) {
-  return name
-    .split(" ")
-    .map((s) => s[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
+      try {
+        setLoading(true);
+        setError("");
+        const data = await getJobs(token);
+        console.log("Fetched jobs:", data);
+        setJobs(data || []);
+      } catch (error) {
+        console.error("Failed to fetch jobs:", error);
+        setError("Failed to load job applications");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-function LocationPill({ type, showLabel = false }) {
-  const key = String(type || "").toLowerCase();
-  const meta = LOCATION_META[key] || LOCATION_META.default;
-  const Icon = meta.icon;
-  return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-white/90 border border-white/60 px-2 py-1">
-      <Icon className="h-5 w-5 sm:h-4 sm:w-4 md:h-3.5 md:w-3.5 text-[#193948]" />
-      <span
-        className={`${
-          showLabel ? "inline" : "hidden md:inline"
-        } text-xs text-[#193948]`}
-      >
-        {meta.label}
-      </span>
-    </span>
-  );
-}
+    fetchJobs();
+  }, [token]);
 
-const STATUS_META = {
-  applied: {
-    label: "Applied",
-    icon: ListPlus,
-    classes: "bg-blue-100 text-blue-800",
-  },
-  rejected: {
-    label: "Rejected",
-    icon: XCircle,
-    classes: "bg-red-100 text-red-800",
-  },
-  interviewed: {
-    label: "Interviewed",
-    icon: MessageCircle,
-    classes: "bg-yellow-100 text-yellow-800",
-  },
-  accepted: {
-    label: "Accepted",
-    icon: CheckCircle,
-    classes: "bg-green-100 text-green-800",
-  },
-  pending: {
-    label: "Pending",
-    icon: Hourglass,
-    classes: "bg-gray-100 text-gray-800",
-  },
-  default: {
-    label: "Status",
-    icon: Hourglass,
-    classes: "bg-gray-100 text-gray-800",
-  },
-};
+  // Filter and search jobs
+  const filteredJobs = useMemo(() => {
+    let filtered = jobs;
 
-const fadeUp = {
-  initial: { opacity: 0, y: 6 },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 420, damping: 34 },
-  },
-};
+    // Apply status filter
+    if (filter && filter !== "all") {
+      filtered = filtered.filter(
+        (job) => job.status.toLowerCase() === filter.toLowerCase()
+      );
+    }
 
-function StatusBadge({ status, size = "sm" }) {
-  const key = String(status || "").toLowerCase();
-  const meta = STATUS_META[key] || STATUS_META.default;
-  const Icon = meta.icon;
+    // Apply search filter
+    if (searchQuery && searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(
+        (job) =>
+          job.title.toLowerCase().includes(query) ||
+          job.company.toLowerCase().includes(query) ||
+          job.address.toLowerCase().includes(query) ||
+          (job.notes && job.notes.toLowerCase().includes(query))
+      );
+    }
 
-  const sz =
-    size === "md"
-      ? { badge: "px-3 py-1 text-xs sm:text-[13px]", icon: "h-4 w-4" }
-      : { badge: "px-2.5 py-1 text-[11px] sm:text-xs", icon: "h-3.5 w-3.5" };
+    return filtered;
+  }, [jobs, filter, searchQuery]);
 
-  return (
-    <Badge
-      className={`shrink-0 inline-flex items-center gap-1.5 rounded-full ${sz.badge} ${meta.classes}`}
-    >
-      <Icon className={sz.icon} />
-      {meta.label}
-    </Badge>
-  );
-}
-
-const STATUS_SOFT = {
-  applied: "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
-  rejected: "bg-red-50 text-red-700 ring-1 ring-red-200",
-  interviewed: "bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200",
-  accepted: "bg-green-50 text-green-700 ring-1 ring-green-200",
-  pending: "bg-gray-50 text-gray-700 ring-1 ring-gray-200",
-  default: "bg-gray-50 text-gray-700 ring-1 ring-gray-200",
-};
-
-export default function JobItems() {
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const [editOpen, setEditOpen] = useState(false);
-
-  const openDialog = (job) => {
-    setSelected(job);
-    setOpen(true);
+  const handleJobAdded = (newJob) => {
+    setJobs((prevJobs) => [newJob, ...prevJobs]);
   };
 
-  const onKeyOpen = (e, job) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      openDialog(job);
+  useImperativeHandle(ref, () => ({
+    addJob: handleJobAdded,
+  }));
+
+  const handleDelete = async (jobId) => {
+    if (!confirm("Are you sure you want to delete this job application?")) {
+      return;
+    }
+
+    try {
+      await deleteJob(jobId, token);
+      setJobs(jobs.filter((job) => job._id !== jobId));
+    } catch (error) {
+      console.error("Failed to delete job:", error);
+      alert("Failed to delete job application");
     }
   };
 
-  const handleEdit = () => {
-    setOpen(false);
-    setTimeout(() => setEditOpen(true), 160);
+  const handleEditFromDetails = (job) => {
+    setSelectedJob(null);
+    setEditingJob(job);
   };
 
-  const handleSaveEdit = (updatedJob) => {
-    console.log("Saved job:", updatedJob);
-    setSelected(updatedJob);
-    setEditOpen(false);
+  const handleEdit = (job) => {
+    setEditingJob(job);
   };
 
-  const handleDeleteJob = (jobToDelete) => {
-    console.log("Delete job:", jobToDelete);
-    setEditOpen(false);
-    setOpen(false);
-    setSelected(null);
+  const handleEditComplete = (updatedJob) => {
+    setJobs(jobs.map((job) => (job._id === updatedJob._id ? updatedJob : job)));
+    setEditingJob(null);
   };
+
+  const handleDeleteComplete = (deletedJob) => {
+    setJobs(jobs.filter((job) => job._id !== deletedJob._id));
+    setEditingJob(null);
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "applied":
+        return <ListPlus className="h-4 w-4 text-blue-600" />;
+      case "interviewing":
+        return <MessageCircle className="h-4 w-4 text-yellow-600" />;
+      case "accepted":
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case "rejected":
+        return <XCircle className="h-4 w-4 text-red-600" />;
+      case "withdrawn":
+        return <XCircle className="h-4 w-4 text-gray-600" />;
+      default:
+        return <Hourglass className="h-4 w-4 text-gray-600" />;
+    }
+  };
+
+  const getLocationIcon = (location) => {
+    switch (location) {
+      case "remote":
+        return <Laptop className="h-4 w-4 text-green-600" />;
+      case "onsite":
+        return <Building2 className="h-4 w-4 text-blue-600" />;
+      case "hybrid":
+        return <Home className="h-4 w-4 text-purple-600" />;
+      default:
+        return <MapPin className="h-4 w-4 text-gray-600" />;
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "applied":
+        return "bg-blue-50 text-blue-700 border-blue-200";
+      case "interviewing":
+        return "bg-yellow-50 text-yellow-700 border-yellow-200";
+      case "offer received":
+        return "bg-green-50 text-green-700 border-green-200";
+      case "rejected":
+        return "bg-red-50 text-red-700 border-red-200";
+      case "withdrawn":
+        return "bg-gray-50 text-gray-700 border-gray-200";
+      default:
+        return "bg-gray-50 text-gray-700 border-gray-200";
+    }
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-[#193948]">Loading job applications...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-red-600">{error}</div>
+      </div>
+    );
+  }
+
+  if (jobs.length === 0) {
+    return (
+      <div className="flex flex-col justify-center items-center h-64">
+        <div className="text-[#193948] text-lg mb-2">
+          No job applications yet
+        </div>
+        <div className="text-[#193948]/60">
+          Start by adding your first application!
+        </div>
+      </div>
+    );
+  }
+
+  if (filteredJobs.length === 0) {
+    return (
+      <div className="p-5">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-white/60 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.25)]">
+          <div className="flex items-center justify-between px-5 pt-5 sm:pb-5">
+            <h2 className="font-medium text-xl text-[#193948]">
+              All applications ({jobs.length})
+            </h2>
+          </div>
+          <div className="flex flex-col justify-center items-center h-64">
+            <div className="text-[#193948] text-lg mb-2">
+              No applications match your criteria
+            </div>
+            <div className="text-[#193948]/60">
+              {filter && filter !== "all"
+                ? `No applications with status "${filter}"`
+                : searchQuery
+                ? `No results found for "${searchQuery}"`
+                : "Try adjusting your filters"}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full p-5">
-      <div className="bg-white/80 backdrop-blur-xl border border-white/60 rounded-3xl shadow-[0_20px_40px_-20px_rgba(0,0,0,0.25)] p-4 sm:p-5">
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <h2 className="text-lg sm:text-xl font-semibold text-[#193948]">
-            All applications
+    <div className="p-5">
+      <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-white/60 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.25)]">
+        <div className="flex items-center justify-between px-5 pt-5 sm:pb-5">
+          <h2 className="font-medium text-xl text-[#193948]">
+            {filter && filter !== "all" ? (
+              <>
+                {filter.charAt(0).toUpperCase() + filter.slice(1)} applications
+                ({filteredJobs.length})
+              </>
+            ) : (
+              <>
+                All applications ({filteredJobs.length}
+                {jobs.length !== filteredJobs.length
+                  ? ` of ${jobs.length}`
+                  : ""}
+                )
+              </>
+            )}
           </h2>
-          <span className="text-sm text-[#5b6d76]">{jobs.length} items</span>
         </div>
 
-        <div className="divide-y divide-[#e9eef2]">
-          {jobs.map((job, i) => (
+        <div className="px-5 pb-2">
+          {filteredJobs.map((job, index) => (
             <motion.div
-              key={job.id}
-              variants={fadeUp}
-              initial="initial"
-              animate="animate"
-              transition={{ delay: i * 0.03 }}
+              key={job._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="group flex items-center justify-between py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50/50 transition-all cursor-pointer rounded-lg px-2 -mx-2"
+              onClick={() => setSelectedJob(job)}
             >
-              <div className="py-3 sm:py-1">
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => openDialog(job)}
-                  onKeyDown={(e) => onKeyOpen(e, job)}
-                  className="rounded-2xl px-2 sm:px-2.5 -mx-2 sm:-mx-3 py-3 cursor-pointer
-             transition-colors hover:bg-black/5
-             focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FCDC73]/50"
-                >
-                  <div className="flex flex-col gap-1 sm:gap-1">
-                    <div className="flex items-start sm:items-center justify-between gap-3">
-                      <div className="flex items-center gap-3 min-w-0">
-                        {/* Company avatar (initials) */}
-                        <div className="h-10 w-10 rounded-2xl bg-white/90 border border-white/60 shadow-sm grid place-items-center shrink-0">
-                          <span className="text-[.8rem] font-semibold text-[#193948]">
-                            {initialsOf(job.company)}
-                          </span>
-                        </div>
+              <div className="flex items-start gap-3 flex-1 min-w-0">
+                <div className="flex items-center gap-2 mt-1">
+                  {getStatusIcon(job.status)}
+                  {getLocationIcon(job.location)}
+                </div>
 
-                        <div className="min-w-0">
-                          <p className="text-[15px] md:text-base font-semibold text-[#193948] leading-tight truncate">
-                            {job.title}
-                          </p>
-                          <p className="text-[13px] md:text-sm text-[#5b6d76] leading-snug truncate">
-                            {job.company}
-                          </p>
-                        </div>
-                      </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-semibold text-[#193948] text-sm truncate">
+                      {job.title}
+                    </h3>
+                    <Badge
+                      variant="outline"
+                      className={`text-xs px-2 py-0.5 shrink-0 ${getStatusColor(
+                        job.status
+                      )}`}
+                    >
+                      {job.status}
+                    </Badge>
+                  </div>
 
-                      {/* Status on the right on mobile; moves to middle on sm+ via separate row */}
-                      <div className="sm:hidden">
-                        <StatusBadge status={job.status} />
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="min-w-0 text-[13px] sm:text-sm text-[#5b6d76] truncate">
-                        <MapPin className="inline-block h-3.5 w-3.5 mr-1.5 align-[-2px] text-[#193948]/60" />
-                        {job.address}
-                      </p>
-                      <p className="shrink-0 text-[11px] sm:text-xs text-[#7b8a92]">
-                        {job.createdAt}
-                      </p>
-                    </div>
-
-                    <div className="flex items-start sm:items-center justify-between sm:justify-start gap-3 sm:gap-2">
-                      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                        <LocationPill type={job.locationType} />
-                        <div className="hidden sm:block">
-                          <StatusBadge status={job.status} />
-                        </div>
-                        <p className="hidden sm:block flex-1 min-w-0 text-sm text-[#5b6d76] leading-snug truncate">
-                          <StickyNote className="inline-block h-4 w-4 mr-1 align-[-3px] text-[#193948]/70" />
-                          {job.notes}
-                        </p>
-                      </div>
-
-                      {/* Notes (mobile) */}
-                      <p className="sm:hidden max-w-[60vw] text-[13px] text-[#5b6d76] leading-snug truncate mt-1.5 mr-3">
-                        <StickyNote className="inline-block h-3.5 w-3.5 mr-1 align-[-2px] text-[#193948]/70" />
-                        {job.notes}
-                      </p>
+                  <div className="text-xs text-[#193948]/60 mb-1">
+                    <div className="flex items-center gap-1">
+                      <Building2 className="h-3 w-3" />
+                      <span className="font-medium truncate">
+                        {job.company}
+                      </span>
                     </div>
                   </div>
+
+                  <div className="text-xs text-[#193948]/50 flex items-center gap-3">
+                    <div className="flex items-center gap-1 min-w-0">
+                      <MapPin className="h-3 w-3 shrink-0" />
+                      <span className="truncate">{job.address}</span>
+                    </div>
+                    <span className="shrink-0">
+                      Applied {formatDate(job.dateApplied)}
+                    </span>
+                  </div>
+
+                  {job.notes && (
+                    <div className="flex items-center gap-1 mt-1 text-xs text-[#193948]/40">
+                      <StickyNote className="h-3 w-3 shrink-0" />
+                      <span className="truncate">{job.notes}</span>
+                    </div>
+                  )}
                 </div>
+              </div>
+
+              {/* Hide edit/delete buttons on small screens */}
+              <div className="hidden sm:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(job);
+                  }}
+                  className="p-1.5 text-[#193948]/60 hover:text-[#193948] hover:bg-white rounded transition-colors cursor-pointer"
+                  title="Edit application"
+                >
+                  <Pencil size={14} />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(job._id);
+                  }}
+                  className="p-1.5 text-red-400 hover:text-red-600 hover:bg-white rounded transition-colors cursor-pointer"
+                  title="Delete application"
+                >
+                  <Trash2 size={14} />
+                </button>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
 
-      <JobDetailsDialog
-        open={open}
-        onOpenChange={setOpen}
-        job={selected}
-        onEditClick={handleEdit}
-      />
+      {/* Job Details Dialog */}
+      {selectedJob && (
+        <JobDetailsDialog
+          job={selectedJob}
+          isOpen={!!selectedJob}
+          onClose={() => setSelectedJob(null)}
+          onEditClick={handleEditFromDetails}
+        />
+      )}
 
-      <EditDialog
-        open={editOpen}
-        onOpenChange={setEditOpen}
-        job={selected}
-        onSave={handleSaveEdit}
-        onDelete={handleDeleteJob}
-      />
+      {/* Edit Dialog */}
+      {editingJob && (
+        <EditDialog
+          job={editingJob}
+          isOpen={!!editingJob}
+          onClose={() => setEditingJob(null)}
+          onSave={handleEditComplete}
+          onDelete={handleDeleteComplete}
+        />
+      )}
     </div>
   );
-}
+});
+
+JobItems.displayName = "JobItems";
+
+export default JobItems;

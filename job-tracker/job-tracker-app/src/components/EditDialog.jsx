@@ -25,41 +25,41 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useAuth from "@/hooks/useAuth";
+import { updateJob, deleteJob } from "../api.js";
 
-export default function EditDialog({
-  open,
-  onOpenChange,
-  job,
-  onSave,
-  onDelete,
-}) {
+export default function EditDialog({ job, isOpen, onClose, onSave, onDelete }) {
+  const { token } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
     company: "",
     address: "",
-    locationType: "",
+    location: "",
     status: "",
     notes: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (open && job) {
+    if (isOpen && job) {
       setFormData({
         title: job.title || "",
         company: job.company || "",
         address: job.address || "",
-        locationType: job.locationType || "",
+        location: job.location || "",
         status: job.status || "",
         notes: job.notes || "",
       });
+      setError("");
     }
-  }, [open, job]);
+  }, [isOpen, job]);
 
   const locationOptions = useMemo(
     () => [
       { value: "remote", label: "Remote" },
       { value: "hybrid", label: "Hybrid" },
-      { value: "on-site", label: "On-site" },
+      { value: "onsite", label: "On-site" },
     ],
     []
   );
@@ -67,53 +67,103 @@ export default function EditDialog({
   const statusOptions = useMemo(
     () => [
       { value: "applied", label: "Applied" },
-      { value: "pending", label: "Pending" },
-      { value: "interviewed", label: "Interviewed" },
+      { value: "interviewing", label: "Interviewing" },
       { value: "accepted", label: "Accepted" },
       { value: "rejected", label: "Rejected" },
+      { value: "withdrawn", label: "Withdrawn" },
     ],
     []
   );
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    if (error) setError("");
   };
 
   const isValid =
     formData.title.trim() &&
     formData.company.trim() &&
-    formData.locationType &&
+    formData.address.trim() &&
+    formData.location &&
     formData.status;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isValid) return;
-    if (onSave) onSave({ ...job, ...formData });
-    onOpenChange(false);
+    if (!isValid || !job) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const updatedData = {
+        title: formData.title.trim(),
+        company: formData.company.trim(),
+        address: formData.address.trim(),
+        location: formData.location,
+        status: formData.status,
+        notes: formData.notes.trim(),
+      };
+
+      const updatedJob = await updateJob(job._id, updatedData, token);
+
+      // Call the onSave callback with the updated job
+      if (onSave) {
+        onSave(updatedJob);
+      }
+
+      onClose();
+    } catch (error) {
+      console.error("Failed to update job:", error);
+      setError(error.message || "Failed to update job application");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClose = () => {
-    onOpenChange(false);
+    if (!loading) {
+      onClose();
+    }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!job) return;
-    const ok = window.confirm(
+
+    const confirmed = window.confirm(
       "Delete this application? This action cannot be undone."
     );
-    if (ok && onDelete) onDelete(job);
-    if (ok) onOpenChange(false);
+
+    if (!confirmed) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      await deleteJob(job._id, token);
+
+      // Call the onDelete callback
+      if (onDelete) {
+        onDelete(job);
+      }
+
+      onClose();
+    } catch (error) {
+      console.error("Failed to delete job:", error);
+      setError(error.message || "Failed to delete job application");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={loading ? () => {} : onClose}>
       <DialogContent
         className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
                    bg-gradient-to-br from-white via-white to-[#fefcf0]
                    rounded-3xl p-0 shadow-[0_32px_64px_-24px_rgba(0,0,0,0.35)]
                    border border-[#f0f4f8]
-                   w-[min(960px,calc(100vw-4rem))]  /* wide with side gutters */
-                   max-h-[calc(100vh-4rem)]         /* top/bottom gutters */
+                   w-[min(960px,calc(100vw-4rem))]
+                   max-h-[calc(100vh-4rem)]
                    overflow-hidden"
         showCloseButton={false}
       >
@@ -144,12 +194,18 @@ export default function EditDialog({
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="px-6 sm:px-8 pb-6 sm:pb-8">
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            )}
+
             <div className="space-y-4 sm:space-y-5">
               {/* Job Title */}
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-[#193948]">
                   <Briefcase className="h-4 w-4 text-[#7b8a92]" />
-                  Job Title *
+                  Job Title <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -157,9 +213,11 @@ export default function EditDialog({
                   onChange={(e) => handleInputChange("title", e.target.value)}
                   placeholder="e.g. Frontend Developer"
                   required
+                  disabled={loading}
                   className="w-full px-4 py-3 rounded-2xl border border-[#e9eef2] bg-white/60
                              focus:border-[#FCDC73] focus:ring-2 focus:ring-[#FCDC73]/20 focus:bg-white
-                             text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all"
+                             text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all
+                             disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -167,7 +225,7 @@ export default function EditDialog({
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-[#193948]">
                   <Building2 className="h-4 w-4 text-[#7b8a92]" />
-                  Company *
+                  Company <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -175,9 +233,11 @@ export default function EditDialog({
                   onChange={(e) => handleInputChange("company", e.target.value)}
                   placeholder="e.g. Google Inc."
                   required
+                  disabled={loading}
                   className="w-full px-4 py-3 rounded-2xl border border-[#e9eef2] bg-white/60
                              focus:border-[#FCDC73] focus:ring-2 focus:ring-[#FCDC73]/20 focus:bg-white
-                             text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all"
+                             text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all
+                             disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -185,16 +245,19 @@ export default function EditDialog({
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-[#193948]">
                   <MapPin className="h-4 w-4 text-[#7b8a92]" />
-                  Address
+                  Address <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => handleInputChange("address", e.target.value)}
                   placeholder="e.g. 1600 Amphitheatre Pkwy, Mountain View, CA"
+                  required
+                  disabled={loading}
                   className="w-full px-4 py-3 rounded-2xl border border-[#e9eef2] bg-white/60
                              focus:border-[#FCDC73] focus:ring-2 focus:ring-[#FCDC73]/20 focus:bg-white
-                             text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all"
+                             text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all
+                             disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -202,19 +265,21 @@ export default function EditDialog({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-[#193948]">
-                    Location Type *
+                    Location Type <span className="text-red-500">*</span>
                   </label>
                   <Select
-                    value={formData.locationType}
+                    value={formData.location}
                     onValueChange={(value) =>
-                      handleInputChange("locationType", value)
+                      handleInputChange("location", value)
                     }
                     required
+                    disabled={loading}
                   >
                     <SelectTrigger
                       className="w-full px-4 py-3 rounded-2xl border border-[#e9eef2] bg-white/60
                                              focus:border-[#FCDC73] focus:ring-2 focus:ring-[#FCDC73]/20 focus:bg-white
-                                             text-[#193948] outline-none transition-all"
+                                             text-[#193948] outline-none transition-all
+                                             disabled:opacity-50"
                     >
                       <SelectValue placeholder="Select location" />
                     </SelectTrigger>
@@ -234,7 +299,7 @@ export default function EditDialog({
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-[#193948]">
-                    Status *
+                    Status <span className="text-red-500">*</span>
                   </label>
                   <Select
                     value={formData.status}
@@ -242,11 +307,13 @@ export default function EditDialog({
                       handleInputChange("status", value)
                     }
                     required
+                    disabled={loading}
                   >
                     <SelectTrigger
                       className="w-full px-4 py-3 rounded-2xl border border-[#e9eef2] bg-white/60
                                              focus:border-[#FCDC73] focus:ring-2 focus:ring-[#FCDC73]/20 focus:bg-white
-                                             text-[#193948] outline-none transition-all"
+                                             text-[#193948] outline-none transition-all
+                                             disabled:opacity-50"
                     >
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
@@ -276,10 +343,11 @@ export default function EditDialog({
                   onChange={(e) => handleInputChange("notes", e.target.value)}
                   placeholder="Add any additional notes..."
                   rows={3}
+                  disabled={loading}
                   className="w-full px-4 py-3 rounded-2xl border border-[#e9eef2] bg-white/60
                              focus:border-[#FCDC73] focus:ring-2 focus:ring-[#FCDC73]/20 focus:bg-white
                              text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all
-                             resize-none"
+                             resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -288,32 +356,34 @@ export default function EditDialog({
               <button
                 type="button"
                 onClick={handleDelete}
+                disabled={loading}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl
                            border border-red-200 text-red-700 bg-red-50/70 hover:bg-red-50
                            focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300
-                           transition-all cursor-pointer"
+                           transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Trash2 className="h-4 w-4" />
-                Delete
+                {loading ? "Deleting..." : "Delete"}
               </button>
 
               <div className="ml-auto flex gap-3">
                 <button
                   type="button"
                   onClick={handleClose}
+                  disabled={loading}
                   className="px-6 py-3 rounded-2xl border border-[#e9eef2] bg-white/80
                              text-[#5b6d76] hover:bg-white hover:border-[#d1d9e0]
                              focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FCDC73]/30
-                             transition-all cursor-pointer"
+                             transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </button>
 
                 <motion.button
                   type="submit"
-                  disabled={!isValid}
-                  whileHover={{ y: -1, scale: 1.02 }}
-                  whileTap={{ y: 0, scale: 0.98 }}
+                  disabled={!isValid || loading}
+                  whileHover={loading ? {} : { y: -1, scale: 1.02 }}
+                  whileTap={loading ? {} : { y: 0, scale: 0.98 }}
                   transition={{
                     type: "spring",
                     stiffness: 500,
@@ -322,7 +392,11 @@ export default function EditDialog({
                   }}
                   className={`group relative overflow-hidden inline-flex items-center justify-center gap-2 
                              rounded-2xl px-4 sm:px-6 py-3 font-medium
-                             ${isValid ? "text-[#193948]" : "text-[#193948]/50"}
+                             ${
+                               isValid && !loading
+                                 ? "text-[#193948]"
+                                 : "text-[#193948]/50"
+                             }
                              bg-[linear-gradient(180deg,#FCDC73_0%,#f4d861_100%)]
                              shadow-[0_16px_32px_-16px_rgba(252,220,115,0.6)]
                              hover:brightness-[.98] active:brightness-95
@@ -336,7 +410,7 @@ export default function EditDialog({
                     />
                   </span>
                   <Pencil className="h-4 w-4" />
-                  Save changes
+                  {loading ? "Saving..." : "Save changes"}
                 </motion.button>
               </div>
             </div>

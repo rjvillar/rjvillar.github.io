@@ -1,13 +1,14 @@
-const express = require('express');
+import express from 'express';
+import Job from '../models/Job.js';
+import authMiddleware from '../middleware/authMiddleware.js';
+
 const router = express.Router();
-const Job = require('../models/Job');
-const authMiddleware = require('../middleware/authMiddleware');
 
 router.post('/', authMiddleware, async (req, res) => {
     const { title, company, address, location, status, notes } = req.body;
 
     try {
-        const allowedStatuses = ['applied', 'interviewing', 'offer received', 'rejected', 'none', 'withdrawn'];
+        const allowedStatuses = ['applied', 'interviewing', 'accepted', 'rejected', 'none', 'withdrawn'];
         const allowedLocations = ['remote', 'onsite', 'hybrid', 'none'];
 
         if (!allowedStatuses.includes(status)) {
@@ -72,7 +73,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: 'Job not found' });
         }
 
-        const allowedStatuses = ['applied', 'interviewing', 'offer received', 'rejected', 'none', 'withdrawn'];
+        const allowedStatuses = ['applied', 'interviewing', 'accepted', 'rejected', 'none', 'withdrawn'];
         const allowedLocations = ['remote', 'onsite', 'hybrid', 'none'];
 
         if (status && !allowedStatuses.includes(status)) {
@@ -126,4 +127,4 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

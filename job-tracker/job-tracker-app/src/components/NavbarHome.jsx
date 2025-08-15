@@ -19,10 +19,12 @@ import {
   Settings as SettingsIcon,
   LogOut,
 } from "lucide-react";
+import useAuth from "../hooks/useAuth.js";
 
 function NavbarHome() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const active = location.pathname.toLowerCase().includes("my-jobs")
     ? "jobs"
     : "dashboard";
@@ -125,6 +127,11 @@ function NavbarHome() {
       </NavLink>
     );
   });
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <div className="z-40 flex items-center justify-between pt-8 pb-6 px-7 sm:px-10 sm:pt-9 relative bg-[#f7f6fb]">
@@ -287,7 +294,7 @@ function NavbarHome() {
 
               <button
                 role="menuitem"
-                onClick={() => setMenuOpen(false)}
+                onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-black/5 focus:bg-black/5 text-left text-[#193948] focus:outline-none cursor-pointer"
               >
                 <span className="h-8 w-8 grid place-items-center rounded-xl bg-white/90 border border-white/60">

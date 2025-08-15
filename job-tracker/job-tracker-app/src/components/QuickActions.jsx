@@ -3,7 +3,7 @@ import { Search, Plus, SlidersHorizontal } from "lucide-react";
 import { motion } from "framer-motion";
 import AddApplication from "./AddApplication";
 
-function QuickActions() {
+function QuickActions({ onJobAdded, onFilterChange, onSearchChange }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("all");
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -12,9 +12,23 @@ function QuickActions() {
     { key: "all", label: "All" },
     { key: "applied", label: "Applied" },
     { key: "pending", label: "Pending" },
-    { key: "interview", label: "Interview" },
+    { key: "interviewing", label: "Interviewing" },
     { key: "rejected", label: "Rejected" },
   ];
+
+  const handleSearchChange = (newQuery) => {
+    setQuery(newQuery);
+    if (onSearchChange) {
+      onSearchChange(newQuery);
+    }
+  };
+
+  const handleStatusChange = (newStatus) => {
+    setStatus(newStatus);
+    if (onFilterChange) {
+      onFilterChange(newStatus);
+    }
+  };
 
   const fadeUp = {
     initial: { opacity: 0, y: 6 },
@@ -39,7 +53,7 @@ function QuickActions() {
             <input
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Search applications, companies, roles"
               className="w-full pl-10 pr-4 py-2.5 rounded-full bg-white/80 border border-white/60 outline-none focus:ring-2 focus:ring-[#FCDC73]/50 text-[#193948] placeholder:text-[#8aa0aa] shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]"
             />
@@ -92,7 +106,7 @@ function QuickActions() {
                 return (
                   <motion.button
                     key={s.key}
-                    onClick={() => setStatus(s.key)}
+                    onClick={() => handleStatusChange(s.key)}
                     aria-pressed={active}
                     whileTap={{ scale: 0.98 }}
                     className={`px-3 py-1.5 rounded-full text-sm transition-all focus:outline-none
@@ -111,7 +125,11 @@ function QuickActions() {
           </div>
         </motion.div>
       </div>
-      <AddApplication open={showAddDialog} onOpenChange={setShowAddDialog} />
+      <AddApplication
+        open={showAddDialog}
+        onOpenChange={setShowAddDialog}
+        onJobAdded={onJobAdded}
+      />
     </>
   );
 }

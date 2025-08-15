@@ -25,29 +25,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useAuth from "@/hooks/useAuth";
+import { createJob } from "../api";
 
-export default function AddApplication({ open, onOpenChange }) {
+export default function AddApplication({ open, onOpenChange, onJobAdded }) {
+  const { token } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
     company: "",
     address: "",
-    locationType: "",
+    location: "",
     status: "",
     notes: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
+  // Update options to match backend enums
   const locationOptions = [
     { value: "remote", label: "Remote" },
     { value: "hybrid", label: "Hybrid" },
-    { value: "on-site", label: "On-site" },
+    { value: "onsite", label: "On-site" },
   ];
 
   const statusOptions = [
     { value: "applied", label: "Applied" },
-    { value: "pending", label: "Pending" },
-    { value: "interviewed", label: "Interviewed" },
+    { value: "interviewing", label: "Interviewing" },
     { value: "accepted", label: "Accepted" },
     { value: "rejected", label: "Rejected" },
+    { value: "withdrawn", label: "Withdrawn" },
   ];
 
   const handleInputChange = (field, value) => {
@@ -55,44 +61,98 @@ export default function AddApplication({ open, onOpenChange }) {
       ...prev,
       [field]: value,
     }));
+    if (error) setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form data:", formData);
+    setLoading(true);
+    setError("");
 
-    setFormData({
-      title: "",
-      company: "",
-      address: "",
-      locationType: "",
-      status: "",
-      notes: "",
-    });
-    onOpenChange(false);
+    if (!formData.title.trim()) {
+      setError("Job title is required");
+      setLoading(false);
+      return;
+    }
+    if (!formData.company.trim()) {
+      setError("Company is required");
+      setLoading(false);
+      return;
+    }
+    if (!formData.address.trim()) {
+      setError("Address is required");
+      setLoading(false);
+      return;
+    }
+    if (!formData.location) {
+      setError("Location type is required");
+      setLoading(false);
+      return;
+    }
+    if (!formData.status) {
+      setError("Status is required");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const jobData = {
+        title: formData.title.trim(),
+        company: formData.company.trim(),
+        address: formData.address.trim(),
+        location: formData.location,
+        status: formData.status,
+        notes: formData.notes.trim(),
+      };
+
+      const newJob = await createJob(jobData, token);
+
+      setFormData({
+        title: "",
+        company: "",
+        address: "",
+        location: "",
+        status: "",
+        notes: "",
+      });
+
+      if (onJobAdded) {
+        onJobAdded(newJob);
+      }
+
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Failed to create job:", error);
+      setError(error.message || "Failed to add job application");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClose = () => {
-    setFormData({
-      title: "",
-      company: "",
-      address: "",
-      locationType: "",
-      status: "",
-      notes: "",
-    });
-    onOpenChange(false);
+    if (!loading) {
+      setFormData({
+        title: "",
+        company: "",
+        address: "",
+        location: "",
+        status: "",
+        notes: "",
+      });
+      setError("");
+      onOpenChange(false);
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={loading ? () => {} : onOpenChange}>
       <DialogContent
         className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
                    bg-gradient-to-br from-white via-white to-[#fefcf0]
                    rounded-3xl p-0 shadow-[0_32px_64px_-24px_rgba(0,0,0,0.35)]
                    border border-[#f0f4f8]
-                   w-[min(960px,calc(100vw-4rem))]  /* wider, with 2rem side gutters */
-                   max-h-[calc(100vh-4rem)]         /* 2rem top/bottom gutters */
+                   w-[min(960px,calc(100vw-4rem))]
+                   max-h-[calc(100vh-4rem)]
                    overflow-hidden"
         showCloseButton={false}
       >
@@ -124,6 +184,12 @@ export default function AddApplication({ open, onOpenChange }) {
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="px-4 pb-4 sm:px-6 sm:pb-6">
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            )}
+
             <div className="space-y-4">
               {/* Job Title */}
               <div className="space-y-2">
@@ -137,9 +203,11 @@ export default function AddApplication({ open, onOpenChange }) {
                   onChange={(e) => handleInputChange("title", e.target.value)}
                   placeholder="e.g. Frontend Developer"
                   required
+                  disabled={loading}
                   className="w-full px-4 py-3 rounded-2xl border border-[#e9eef2] bg-white/60
                              focus:border-[#FCDC73] focus:ring-2 focus:ring-[#FCDC73]/20 focus:bg-white
-                             text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all"
+                             text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all
+                             disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -155,9 +223,11 @@ export default function AddApplication({ open, onOpenChange }) {
                   onChange={(e) => handleInputChange("company", e.target.value)}
                   placeholder="e.g. Google Inc."
                   required
+                  disabled={loading}
                   className="w-full px-4 py-3 rounded-2xl border border-[#e9eef2] bg-white/60
                              focus:border-[#FCDC73] focus:ring-2 focus:ring-[#FCDC73]/20 focus:bg-white
-                             text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all"
+                             text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all
+                             disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -165,16 +235,19 @@ export default function AddApplication({ open, onOpenChange }) {
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-[#193948]">
                   <MapPin className="h-4 w-4 text-[#7b8a92]" />
-                  Address
+                  Address <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => handleInputChange("address", e.target.value)}
                   placeholder="e.g. Ortigas, Pasig City"
+                  required
+                  disabled={loading}
                   className="w-full px-4 py-3 rounded-2xl border border-[#e9eef2] bg-white/60
                              focus:border-[#FCDC73] focus:ring-2 focus:ring-[#FCDC73]/20 focus:bg-white
-                             text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all"
+                             text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all
+                             disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -185,16 +258,18 @@ export default function AddApplication({ open, onOpenChange }) {
                     Location Type <span className="text-red-500">*</span>
                   </label>
                   <Select
-                    value={formData.locationType}
+                    value={formData.location}
                     onValueChange={(value) =>
-                      handleInputChange("locationType", value)
+                      handleInputChange("location", value)
                     }
                     required
+                    disabled={loading}
                   >
                     <SelectTrigger
                       className="w-full px-4 py-3 rounded-2xl border border-[#e9eef2] bg-white/60
                                              focus:border-[#FCDC73] focus:ring-2 focus:ring-[#FCDC73]/20 focus:bg-white
-                                             text-[#193948] outline-none transition-all"
+                                             text-[#193948] outline-none transition-all
+                                             disabled:opacity-50"
                     >
                       <SelectValue placeholder="Select location" />
                     </SelectTrigger>
@@ -222,11 +297,13 @@ export default function AddApplication({ open, onOpenChange }) {
                       handleInputChange("status", value)
                     }
                     required
+                    disabled={loading}
                   >
                     <SelectTrigger
                       className="w-full px-4 py-3 rounded-2xl border border-[#e9eef2] bg-white/60
                                              focus:border-[#FCDC73] focus:ring-2 focus:ring-[#FCDC73]/20 focus:bg-white
-                                             text-[#193948] outline-none transition-all"
+                                             text-[#193948] outline-none transition-all
+                                             disabled:opacity-50"
                     >
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
@@ -256,10 +333,11 @@ export default function AddApplication({ open, onOpenChange }) {
                   onChange={(e) => handleInputChange("notes", e.target.value)}
                   placeholder="Add any additional notes..."
                   rows={3}
+                  disabled={loading}
                   className="w-full px-4 py-3 rounded-2xl border border-[#e9eef2] bg-white/60
                              focus:border-[#FCDC73] focus:ring-2 focus:ring-[#FCDC73]/20 focus:bg-white
                              text-[#193948] placeholder:text-[#8aa0aa] outline-none transition-all
-                             resize-none"
+                             resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -268,18 +346,20 @@ export default function AddApplication({ open, onOpenChange }) {
               <button
                 type="button"
                 onClick={handleClose}
+                disabled={loading}
                 className="flex-1 sm:flex-none px-6 py-3 rounded-2xl border border-[#e9eef2] bg-white/80 
                            text-[#5b6d76] hover:bg-white hover:border-[#d1d9e0] 
                            focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FCDC73]/30
-                           transition-all cursor-pointer"
+                           transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
 
               <motion.button
                 type="submit"
-                whileHover={{ y: -1, scale: 1.02 }}
-                whileTap={{ y: 0, scale: 0.98 }}
+                disabled={loading}
+                whileHover={loading ? {} : { y: -1, scale: 1.02 }}
+                whileTap={loading ? {} : { y: 0, scale: 0.98 }}
                 transition={{
                   type: "spring",
                   stiffness: 500,
@@ -292,7 +372,7 @@ export default function AddApplication({ open, onOpenChange }) {
                            shadow-[0_16px_32px_-16px_rgba(252,220,115,0.6)]
                            hover:brightness-[.98] active:brightness-95
                            focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FCDC73]/60 
-                           transition-all cursor-pointer"
+                           transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="pointer-events-none absolute inset-0">
                   <span
@@ -301,7 +381,7 @@ export default function AddApplication({ open, onOpenChange }) {
                   />
                 </span>
                 <Plus className="h-4 w-4" />
-                Add Application
+                {loading ? "Adding..." : "Add Application"}
               </motion.button>
             </div>
           </form>

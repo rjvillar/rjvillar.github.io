@@ -1,17 +1,20 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const jobSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     company: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     address: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     location: {
         type: String,
@@ -20,21 +23,24 @@ const jobSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['applied', 'interviewing', 'offer received', 'rejected', 'none', 'withdrawn'],
-        default: 'none'
+        enum: ['applied', 'interviewing', 'accepted', 'rejected', 'none', 'withdrawn'],
+        default: 'applied'
     },
     notes: {
-        type: String
+        type: String,
+        trim: true
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    createdAt: {
+    dateApplied: {
         type: Date,
         default: Date.now
     }
+}, {
+    timestamps: true
 });
 
-module.exports = mongoose.model('Job', jobSchema);
+export default mongoose.model('Job', jobSchema);

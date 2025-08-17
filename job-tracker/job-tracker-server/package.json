@@ -1,7 +1,8 @@
 {
   "name": "job-tracker-server",
   "version": "1.0.0",
-  "description": "Hustlr (Job Tracker) Backend API",
+  "description": "Job Tracker Backend API",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -9,8 +10,18 @@
     "build": "echo 'No build step required for backend'"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   },
+  "keywords": [
+    "job",
+    "tracker",
+    "api",
+    "express",
+    "mongodb"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
     "mongoose": "^7.5.0",

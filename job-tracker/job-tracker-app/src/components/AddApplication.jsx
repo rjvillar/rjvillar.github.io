@@ -41,7 +41,6 @@ export default function AddApplication({ open, onOpenChange, onJobAdded }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Update options to match backend enums
   const locationOptions = [
     { value: "remote", label: "Remote" },
     { value: "hybrid", label: "Hybrid" },
